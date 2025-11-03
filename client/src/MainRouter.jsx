@@ -11,6 +11,8 @@ import Home from './pages/Home.jsx';
 import StaffMenu from './pages/StaffMenu.jsx';
 import BranchMenu from './pages/BranchMenu.jsx';
 import ClientMenu from './pages/ClientMenu.jsx';
+import Login from './pages/Login.jsx';
+import Register from './pages/Register.jsx';
 
 const MainRouter = () => (
     <BrowserRouter>
@@ -20,6 +22,8 @@ const MainRouter = () => (
                 <Route path="staff" element={<StaffMenu />} />
                 <Route path="branches" element={<BranchMenu />} />
                 <Route path="clients" element={<ClientMenu />} />
+                <Route path="login" element={<Login />} />
+                <Route path="register" element={<Register />} />
             </Route>
         </Routes>
     </BrowserRouter>

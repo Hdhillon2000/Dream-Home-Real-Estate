@@ -7,7 +7,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PageSection from '../components/PageSection.jsx';
-import { getDashboardCards } from '../utils/navigation.js';
+import { getDashboardCards, getAuthCards } from '../utils/navigation.js';
 
 export default function Home() {
     return (
@@ -32,6 +32,23 @@ export default function Home() {
                             {/* Links keep navigation SPA-friendly without full reloads */}
                             <Link to={card.path} className="menu-card__cta">
                                 Open Menu
+                            </Link>
+                        </article>
+                    ))}
+                </div>
+            </PageSection>
+
+            <PageSection
+                title="Account Access"
+                description="Team members can sign in or request access to the platform below."
+            >
+                <div className="menu-card-grid">
+                    {getAuthCards().map((card) => (
+                        <article className="menu-card" key={card.cardTitle}>
+                            <h4>{card.cardTitle}</h4>
+                            <p>{card.cardBody}</p>
+                            <Link to={card.path} className="menu-card__cta">
+                                Go to {card.navLabel}
                             </Link>
                         </article>
                     ))}

@@ -153,6 +153,10 @@ button:focus-visible {
     gap: 1rem 1.5rem;
 }
 
+.form-grid--narrow {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
 .form-grid label {
     display: flex;
     flex-direction: column;
@@ -205,6 +209,15 @@ button:focus-visible {
     display: flex;
     gap: 1rem;
     grid-column: 1 / -1;
+}
+
+.form-actions--aligned {
+    align-items: center;
+}
+
+.form-status {
+    font-size: 0.95rem;
+    color: rgba(148, 163, 184, 0.92);
 }
 
 .button--ghost {

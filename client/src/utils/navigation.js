@@ -32,7 +32,22 @@ export const MENU_ENTRIES = [
     },
 ];
 
-export const PRIMARY_NAV_LINKS = [HOME_NAV_ITEM, ...MENU_ENTRIES];
+export const AUTH_ENTRIES = [
+    {
+        path: '/login',
+        navLabel: 'Login',
+        cardTitle: 'Sign In',
+        cardBody: 'Access the administration console with your staff credentials.',
+    },
+    {
+        path: '/register',
+        navLabel: 'Register',
+        cardTitle: 'Request Access',
+        cardBody: 'Submit your details for approval and onboarding to the platform.',
+    },
+];
+
+export const PRIMARY_NAV_LINKS = [HOME_NAV_ITEM, ...MENU_ENTRIES, ...AUTH_ENTRIES];
 
 /**
  * Returns menu entries that should render as cards on the home dashboard.
@@ -40,4 +55,12 @@ export const PRIMARY_NAV_LINKS = [HOME_NAV_ITEM, ...MENU_ENTRIES];
  */
 export function getDashboardCards() {
     return MENU_ENTRIES;
+}
+
+/**
+ * Returns authentication related cards for the home landing page.
+ * @returns {Array} auth menu card configuration.
+ */
+export function getAuthCards() {
+    return AUTH_ENTRIES;
 }
