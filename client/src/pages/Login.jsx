@@ -12,7 +12,7 @@ export default function Login() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // Placeholder response until auth endpoints are live.
+        // TODO (Backend Team): replace placeholder with POST /api/auth/login once JWT/session flow lands.
         setStatus('Authentication service coming soon.');
     };
 

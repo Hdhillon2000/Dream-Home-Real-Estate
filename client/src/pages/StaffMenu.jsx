@@ -38,6 +38,7 @@ export default function StaffMenu() {
     useEffect(() => {
         let isMounted = true;
 
+        // TODO (Backend Team): swap resolvePlaceholder with GET /api/staff listings once dh_staff_hire_sp integrates.
         resolvePlaceholder(STAFF_PLACEHOLDER).then((data) => {
             if (isMounted) {
                 setStaffRecords(data);

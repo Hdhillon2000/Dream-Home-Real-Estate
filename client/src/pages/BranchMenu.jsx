@@ -35,6 +35,7 @@ export default function BranchMenu() {
     useEffect(() => {
         let isMounted = true;
 
+        // TODO (Backend Team): replace with GET /api/branches after exposing dh_branch queries and new_branch procedure.
         resolvePlaceholder(BRANCH_PLACEHOLDER).then((data) => {
             if (isMounted) {
                 setBranchRecords(data);

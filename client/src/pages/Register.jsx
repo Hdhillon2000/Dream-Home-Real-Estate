@@ -12,7 +12,7 @@ export default function Register() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // Placeholder feedback until the registration API is connected.
+        // TODO (Backend Team): wire up POST /api/auth/register once approval workflow is available.
         setStatus('Registration workflow will connect to the backend shortly.');
     };
 

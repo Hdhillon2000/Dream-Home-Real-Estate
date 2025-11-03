@@ -1,16 +1,48 @@
-# React + Vite
+# Dream Home Real Estate — Front-End
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
+Dream Home Real Estate is a React + Vite interface that mirrors our instructor brief for staff, branch, client, and authentication workflows. The current build focuses on documented layouts, navigation parity, and placeholder data so the backend team can wire Oracle procedures and REST endpoints without UI blockers.
 
-Currently, two official plugins are available:
+## Tech Stack
+- React 19 with Vite 7 for a fast development experience
+- React Router 7 for SPA navigation
+- ESLint 9 standard config (matching portfolio code style)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Getting Started
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+The dev server runs on http://localhost:5173 by default. Use `npm run lint` before committing to keep formatting aligned with the rest of the portfolio projects.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Project Structure
+```
+client/
+  src/
+    components/      # Layout chrome + shared wrappers
+    pages/           # Route-aligned screens (staff, branch, client, auth)
+    utils/           # Navigation metadata + API helpers
+    index.css        # Base design tokens + layout primitives
+```
 
-## Expanding the ESLint configuration
+## Backend Coordination
+- `GET /api/test` is the only live route today; staff/branch/client CRUD endpoints remain TODO on the Node backend.
+- Authentication forms surface TODO comments in code that call out the expected routes (`POST /api/auth/login`, `POST /api/auth/register`).
+- Placeholder tables resolve through `resolvePlaceholder()` so swapping in real fetch calls will be straight-forward once routes go live.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Change Log
+- **2025-11-03** — Added login/register scaffolding and surfaced auth cards on the dashboard.
+- **2025-11-03** — Introduced shared utilities, refactored layout, and validated linting.
+- **2025-11-01** — Scaffolded staff, branch, and client menus with placeholder data grids.
+- **2025-10-31** — Realigned Vite bootstrap (App shell, router, styling) with portfolio code quality.
+
+## Front-End TODOs
+- Replace placeholder data loaders with `fetch` calls once `/api/staff`, `/api/branches`, and `/api/clients` are exposed by the backend team.
+- Integrate login/register forms with upcoming authentication endpoints and show backend validation responses in `form-status` elements.
+- Add route guards and persist session state once auth is in place.
+- Polish styling (typography, responsive trays) after core functionality is verified.
+
+## Developer Notes
+- Follow the inline `TODO (Backend Team)` breadcrumbs within the page components for exact integration points.
+- Keep documentation headers (`@file`, `@author`, `@since`, `@purpose`) intact when extending components.

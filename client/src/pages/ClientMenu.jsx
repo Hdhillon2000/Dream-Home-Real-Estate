@@ -45,6 +45,7 @@ export default function ClientMenu() {
     useEffect(() => {
         let isMounted = true;
 
+        // TODO (Backend Team): connect to GET /api/clients once client registration endpoints mirror DH_CLIENT logic.
         resolvePlaceholder(CLIENT_PLACEHOLDER).then((data) => {
             if (isMounted) {
                 setClients(data);
