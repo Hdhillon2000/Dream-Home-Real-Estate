@@ -4,10 +4,51 @@
  * @since 2025-11-01
  * @purpose Presents skeleton workflows for hiring and updating staff members.
  */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PageSection from '../components/PageSection.jsx';
+import { resolvePlaceholder } from '../utils/api.js';
+
+const STAFF_PLACEHOLDER = [
+    {
+        id: 'DH101',
+        name: 'Jamie Carter',
+        salary: '$55,000',
+        phone: '(416) 555-0001',
+        email: 'jamie.carter@example.com',
+    },
+    {
+        id: 'DH102',
+        name: 'Morgan Lee',
+        salary: '$62,000',
+        phone: '(416) 555-0002',
+        email: 'morgan.lee@example.com',
+    },
+    {
+        id: 'DH103',
+        name: 'Alexis Grant',
+        salary: '$58,500',
+        phone: '(416) 555-0003',
+        email: 'alexis.grant@example.com',
+    },
+];
 
 export default function StaffMenu() {
+    const [staffRecords, setStaffRecords] = useState([]);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        resolvePlaceholder(STAFF_PLACEHOLDER).then((data) => {
+            if (isMounted) {
+                setStaffRecords(data);
+            }
+        });
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
     return (
         <div className="page page--stacked">
             <header className="page__header">
@@ -80,13 +121,13 @@ export default function StaffMenu() {
                         <span>Email</span>
                         <span>Actions</span>
                     </div>
-                    {Array.from({ length: 3 }).map((_, index) => (
-                        <div role="row" className="table-placeholder__row" key={`staff-row-${index}`}>
-                            <span>DH10{index + 1}</span>
-                            <span>Sample Staff</span>
-                            <span>$55,000</span>
-                            <span>(416) 555-000{index}</span>
-                            <span>staff{index}@example.com</span>
+                    {staffRecords.map((staff) => (
+                        <div role="row" className="table-placeholder__row" key={staff.id}>
+                            <span>{staff.id}</span>
+                            <span>{staff.name}</span>
+                            <span>{staff.salary}</span>
+                            <span>{staff.phone}</span>
+                            <span>{staff.email}</span>
                             <span>
                                 <button type="button" className="button--ghost">Edit</button>
                             </span>

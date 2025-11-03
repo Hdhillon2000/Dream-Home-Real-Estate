@@ -4,10 +4,58 @@
  * @since 2025-11-01
  * @purpose Introduces client onboarding and maintenance placeholders for the UI.
  */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PageSection from '../components/PageSection.jsx';
+import { resolvePlaceholder } from '../utils/api.js';
+
+const CLIENT_PLACEHOLDER = [
+    {
+        id: 'CL101',
+        name: 'Jordan Sample',
+        phone: '(647) 555-1800',
+        email: 'client0@example.com',
+        contact: 'Email',
+    },
+    {
+        id: 'CL102',
+        name: 'Sydney Shaw',
+        phone: '(647) 555-1801',
+        email: 'client1@example.com',
+        contact: 'Phone',
+    },
+    {
+        id: 'CL103',
+        name: 'Robin Diaz',
+        phone: '(647) 555-1802',
+        email: 'client2@example.com',
+        contact: 'SMS',
+    },
+    {
+        id: 'CL104',
+        name: 'Parker Singh',
+        phone: '(647) 555-1803',
+        email: 'client3@example.com',
+        contact: 'Email',
+    },
+];
 
 export default function ClientMenu() {
+    const [clients, setClients] = useState([]);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        resolvePlaceholder(CLIENT_PLACEHOLDER).then((data) => {
+            if (isMounted) {
+                setClients(data);
+            }
+        });
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
     return (
         <div className="page page--stacked">
             <header className="page__header">
@@ -72,13 +120,13 @@ export default function ClientMenu() {
                         <span>Preferred Contact</span>
                         <span>Actions</span>
                     </div>
-                    {Array.from({ length: 4 }).map((_, index) => (
-                        <div role="row" className="table-placeholder__row" key={`client-row-${index}`}>
-                            <span>CL10{index + 1}</span>
-                            <span>Jordan Sample</span>
-                            <span>(647) 555-18{index}0</span>
-                            <span>client{index}@example.com</span>
-                            <span>Email</span>
+                    {clients.map((client) => (
+                        <div role="row" className="table-placeholder__row" key={client.id}>
+                            <span>{client.id}</span>
+                            <span>{client.name}</span>
+                            <span>{client.phone}</span>
+                            <span>{client.email}</span>
+                            <span>{client.contact}</span>
                             <span>
                                 <button type="button" className="button--ghost">Edit</button>
                             </span>

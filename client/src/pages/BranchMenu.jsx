@@ -4,10 +4,48 @@
  * @since 2025-11-01
  * @purpose Holds branch lookup, updates, and onboarding skeletons for the UI.
  */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PageSection from '../components/PageSection.jsx';
+import { resolvePlaceholder } from '../utils/api.js';
+
+const BRANCH_PLACEHOLDER = [
+    {
+        id: 'B001',
+        street: '123 Sample St.',
+        city: 'Toronto',
+        postcode: 'M1M 1M1',
+    },
+    {
+        id: 'B002',
+        street: '88 Harbour View',
+        city: 'Toronto',
+        postcode: 'M5J 2N3',
+    },
+    {
+        id: 'B003',
+        street: '402 King Street',
+        city: 'Ottawa',
+        postcode: 'K1R 5L7',
+    },
+];
 
 export default function BranchMenu() {
+    const [branchRecords, setBranchRecords] = useState([]);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        resolvePlaceholder(BRANCH_PLACEHOLDER).then((data) => {
+            if (isMounted) {
+                setBranchRecords(data);
+            }
+        });
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
     return (
         <div className="page page--stacked">
             <header className="page__header">
@@ -45,12 +83,12 @@ export default function BranchMenu() {
                         <span>Post Code</span>
                         <span>Actions</span>
                     </div>
-                    {Array.from({ length: 3 }).map((_, index) => (
-                        <div role="row" className="table-placeholder__row" key={`branch-row-${index}`}>
-                            <span>B00{index + 1}</span>
-                            <span>123 Sample St.</span>
-                            <span>Toronto</span>
-                            <span>M1M 1M{index}</span>
+                    {branchRecords.map((branch) => (
+                        <div role="row" className="table-placeholder__row" key={branch.id}>
+                            <span>{branch.id}</span>
+                            <span>{branch.street}</span>
+                            <span>{branch.city}</span>
+                            <span>{branch.postcode}</span>
                             <span>
                                 <button type="button" className="button--ghost">Edit</button>
                             </span>

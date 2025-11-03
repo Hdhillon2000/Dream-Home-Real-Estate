@@ -6,13 +6,7 @@
  */
 import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
-
-const PRIMARY_LINKS = [
-    { label: 'Home', to: '/' },
-    { label: 'Staff', to: '/staff' },
-    { label: 'Branches', to: '/branches' },
-    { label: 'Clients', to: '/clients' },
-];
+import { PRIMARY_NAV_LINKS } from '../utils/navigation.js';
 
 export default function Layout() {
     return (
@@ -21,10 +15,10 @@ export default function Layout() {
                 <h1 className="app-header__title">Dream Home Real Estate</h1>
                 <nav aria-label="Primary navigation">
                     <ul className="app-header__links">
-                        {PRIMARY_LINKS.map((link) => (
-                            <li key={link.to}>
-                                <Link to={link.to} className="app-header__link">
-                                    {link.label}
+                        {PRIMARY_NAV_LINKS.map((link) => (
+                            <li key={link.path}>
+                                <Link to={link.path} className="app-header__link">
+                                    {link.navLabel}
                                 </Link>
                             </li>
                         ))}

@@ -7,24 +7,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PageSection from '../components/PageSection.jsx';
-
-const MENU_CARDS = [
-    {
-        title: 'Staff Main Menu',
-        body: 'Hire new agents, update salaries, and keep contact details accurate.',
-        to: '/staff',
-    },
-    {
-        title: 'Branch Main Menu',
-        body: 'Verify addresses, update branch info, and launch new locations.',
-        to: '/branches',
-    },
-    {
-        title: 'Client Main Menu',
-        body: 'Register clients and maintain their communication preferences.',
-        to: '/clients',
-    },
-];
+import { getDashboardCards } from '../utils/navigation.js';
 
 export default function Home() {
     return (
@@ -42,12 +25,12 @@ export default function Home() {
                 description="Choose a workflow to continue. These cards mirror the instructor&apos;s project brief."
             >
                 <div className="menu-card-grid">
-                    {MENU_CARDS.map((card) => (
-                        <article className="menu-card" key={card.title}>
-                            <h4>{card.title}</h4>
-                            <p>{card.body}</p>
+                    {getDashboardCards().map((card) => (
+                        <article className="menu-card" key={card.cardTitle}>
+                            <h4>{card.cardTitle}</h4>
+                            <p>{card.cardBody}</p>
                             {/* Links keep navigation SPA-friendly without full reloads */}
-                            <Link to={card.to} className="menu-card__cta">
+                            <Link to={card.path} className="menu-card__cta">
                                 Open Menu
                             </Link>
                         </article>
