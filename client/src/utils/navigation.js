@@ -12,24 +12,30 @@ export const HOME_NAV_ITEM = {
 };
 
 export const MENU_ENTRIES = [
-    {
-        path: '/staff',
-        navLabel: 'Staff',
-        cardTitle: 'Staff Main Menu',
-        cardBody: 'Hire new agents, adjust salaries, and update contact details.',
-    },
-    {
-        path: '/branches',
-        navLabel: 'Branches',
-        cardTitle: 'Branch Main Menu',
-        cardBody: 'Look up addresses, update branch records, and open new locations.',
-    },
-    {
-        path: '/clients',
-        navLabel: 'Clients',
-        cardTitle: 'Client Main Menu',
-        cardBody: 'Register new clients and edit their engagement preferences.',
-    },
+  {
+    path: '/staff',
+    navLabel: 'Staff',
+    cardTitle: 'Staff Main Menu',
+    cardBody: 'Hire new agents, adjust salaries, and update contact details.',
+  },
+  {
+    path: '/branches',
+    navLabel: 'Branches',
+    cardTitle: 'Branch Main Menu',
+    cardBody: 'Look up addresses, update branch records, and open new locations.',
+  },
+  {
+    path: '/clients',
+    navLabel: 'Clients',
+    cardTitle: 'Client Main Menu',
+    cardBody: 'Register new clients and edit their engagement preferences.',
+  },
+  {
+    path: '/properties',
+    navLabel: 'Listings',
+    cardTitle: 'Property Listings',
+    cardBody: 'Browse current inventory and drill into property detail pages.',
+  },
 ];
 
 export const AUTH_ENTRIES = [
