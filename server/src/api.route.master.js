@@ -3,7 +3,6 @@ import express from 'express';
 
 import authRouter from './routes/auth.route.js';
 
-import linksRouter from './routes/links.js';
 import userRouter from './routes/users.route.js';
 import profileRouter from './routes/userProfile.route.js';
 
@@ -18,7 +17,6 @@ export default (app) => {
   app
     .use('/api/auth', authRouter)
 
-    .use('/api/test', linksRouter)
     .use('/api/users', userRouter)
     .use('/api/profiles', profileRouter)
     .use('/api/approvals', userApprovalRoutes)
