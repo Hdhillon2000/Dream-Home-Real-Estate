@@ -1,6 +1,6 @@
 
 import { Router } from 'express';
-import Controller from '../controllers/';
+import Controller from '../controllers/auth.controller.js';
 import isAuthorized from '../middlewares/auth.js';
 
 export default Router()

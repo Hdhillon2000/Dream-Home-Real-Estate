@@ -1,6 +1,8 @@
 
 import express from 'express';
 
+import authRouter from './routes/auth.route.js';
+
 import linksRouter from './routes/links.js';
 import userRouter from './routes/users.route.js';
 import profileRouter from './routes/userProfile.route.js';

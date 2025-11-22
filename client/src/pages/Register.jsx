@@ -4,8 +4,9 @@
  * @since 2025-11-03
  * @purpose Captures the onboarding form shell for new platform users.
  */
-import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext'; // Import the useAuth hook
+
+import { useState } from 'react';
+import { useAuth } from '../components/auth/AuthContext.js';
 import PageSection from '../components/PageSection.jsx';
 
 export default function Register() {
