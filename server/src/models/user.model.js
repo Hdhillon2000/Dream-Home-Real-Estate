@@ -1,9 +1,12 @@
 
 import createModel from '../mysql/model.js';
+import bcrypt from 'bcrypt';
 
 
-const UserModel = createModel('Users', {
-  primaryKey: 'user_id',
-  fields: ['user_id', 'email', 'password_hash', 'is_active', 'created_at', 'updated_at']
-});
+const UserModel = createModel('Users', { primaryKey: 'user_id' });
+
+UserModel.comparePassword = async (password, hash) => {
+  return bcrypt.compare(password, hash);
+};
+
 export default UserModel;

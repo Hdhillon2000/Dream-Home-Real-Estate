@@ -37,8 +37,8 @@ async function isAuthorized(req, res, next) {
   try {
     const
       publicKey = fs.readFileSync(process.env.NODE_ENV === 'production'
-        ? '/etc/secrets/ec-private-key.pem'
-        : join(process.cwd(), '../etc/secrets/ec-private-key.pem')),
+        ? '/etc/secrets/ec-public-key.pem'
+        : join(process.cwd(), '../etc/secrets/ec-public-key.pem')),
 
       decoded = jwt.verify(token, publicKey, { algorithms: ['ES512'] });
 

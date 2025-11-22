@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 8.4.6, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.4.7, for Linux (x86_64)
 --
 -- Host: mysql-dbproject-dh-mgoodie-ce2d.g.aivencloud.com    Database: dreamhome
 -- ------------------------------------------------------
@@ -21,8 +21,28 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 -- GTID state at the beginning of the backup 
 --
 
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '0cd56ec1-c31a-11f0-9742-862ccfb023a4:1-19,
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '0cd56ec1-c31a-11f0-9742-862ccfb023a4:1-25,
 a8dcff7e-b8c8-11f0-b393-862ccfb05470:1-33';
+
+--
+-- Table structure for table `UserApprovals`
+--
+
+DROP TABLE IF EXISTS `UserApprovals`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `UserApprovals` (
+  `approval_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `approved_by` int NOT NULL,
+  `approved_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`approval_id`),
+  KEY `user_id` (`user_id`),
+  KEY `approved_by` (`approved_by`),
+  CONSTRAINT `UserApprovals_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `UserApprovals_ibfk_2` FOREIGN KEY (`approved_by`) REFERENCES `Users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `UserProfiles`
@@ -36,6 +56,11 @@ CREATE TABLE `UserProfiles` (
   `user_id` int NOT NULL,
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `city` varchar(100) DEFAULT NULL,
+  `state` varchar(100) DEFAULT NULL,
+  `zip_code` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`profile_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `UserProfiles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`) ON DELETE CASCADE
@@ -52,12 +77,16 @@ DROP TABLE IF EXISTS `Users`;
 CREATE TABLE `Users` (
   `user_id` int NOT NULL AUTO_INCREMENT,
   `email` varchar(255) NOT NULL,
+  `username` varchar(100) DEFAULT NULL,
   `password_hash` varchar(255) NOT NULL,
+  `role` enum('agent','manager','support','admin') DEFAULT NULL,
   `is_active` tinyint(1) DEFAULT '0',
+  `is_approved` tinyint(1) DEFAULT '0',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -75,4 +104,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-16 18:45:47
+-- Dump completed on 2025-11-22 14:39:06

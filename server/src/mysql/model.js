@@ -6,18 +6,41 @@ import pool from '../mysql/mysql.js';
  * Similar to Mongoose models but for MySQL
  */
 class Model {
-  constructor(tableName, schema = {}) {
+  constructor(tableName, classOptions = {}) {
     this.tableName = tableName;
-    this.schema = schema;
+    this.classOptions = classOptions;
   };
 
+  
   /**
-   * Find all records
-   * @param {Object} options - Query options (where, limit, offset, orderBy)
+   * Finds records in the database table based on the provided options.
+   * 
+   * @async
+   * @param {Object} [queryOptions={}] - Query options for finding records
+   * @param {Object} [queryOptions.where={}] - Key-value pairs for WHERE conditions (combined with AND)
+   * @param {number} [queryOptions.limit] - Maximum number of records to return
+   * @param {number} [queryOptions.offset] - Number of records to skip
+   * @param {string} [queryOptions.orderBy] - ORDER BY clause (e.g., 'column_name ASC')
+   * @param {string} [queryOptions.select='*'] - Columns to select (comma-separated or '*' for all)
+   * @returns {Promise<Array>} Array of rows matching the query criteria
+   * @throws {Error} Throws error if database query fails
+   * @example
+   * // Find all users
+   * const users = await model.find();
+   * 
+   * @example
+   * // Find users with specific conditions
+   * const activeUsers = await model.find({
+   *   where: { status: 'active', role: 'admin' },
+   *   limit: 10,
+   *   offset: 0,
+   *   orderBy: 'created_at DESC',
+   *   select: 'id, name, email'
+   * });
    */
-  async find(options = {}) {
-    const { where = {}, limit, offset, orderBy } = options;
-    let sql = `SELECT * FROM ${this.tableName}`;
+  async find(queryOptions = {}) {
+    const { where = {}, limit, offset, orderBy, select = '*' } = queryOptions;
+    let sql = `SELECT ${select} FROM ${this.tableName}`;
     const params = [];
 
     if (Object.keys(where).length > 0) {
@@ -26,7 +49,7 @@ class Model {
         return `${key} = ?`;
       });
       sql += ` WHERE ${conditions.join(' AND ')}`;
-    }
+    };
 
     if (orderBy) sql += ` ORDER BY ${orderBy}`;
     if (limit) sql += ` LIMIT ${parseInt(limit)}`;
@@ -50,8 +73,8 @@ class Model {
    * Find one record
    * @param {Object} where - Where conditions
    */
-  async findOne(where = {}) {
-    const results = await this.find({ where, limit: 1 });
+  async findOne(where = {}, queryOptions = {}) {
+    const results = await this.find({ where, limit: 1, ...queryOptions });
     return results[0] || null;
   };
 
@@ -60,7 +83,7 @@ class Model {
    * @param {*} id - Primary key value
    */
   async findById(id) {
-    const pkField = this.schema.primaryKey || `${this.tableName.toLowerCase().slice(0, -1)}_id`;
+    const pkField = this.classOptions.primaryKey || `${this.tableName.toLowerCase().slice(0, -1)}_id`;
     return this.findOne({ [pkField]: id });
   };
 
@@ -178,10 +201,10 @@ class Model {
 /**
  * Factory function to create a new Model instance
  * @param {string} tableName - Name of the table
- * @param {Object} schema - Schema definition
+ * @param {Object} classOptions - Class options
  * @returns {Model} Model instance
  */
-export default async function createModel(tableName, schema = {}) {
-  return new Model(tableName, schema);
+export default async function createModel(tableName, classOptions = {}) {
+  return new Model(tableName, classOptions);
 };
 

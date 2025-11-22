@@ -2,7 +2,7 @@
 import express from 'express';
 import UserModel from '../models/user.model.js';
 import generateToken from '../utils/jwt.js';
-import mergeUserProfile from '../utils/merge_user_profile.js';
+import mergeUserProfile from '../utils/mergeProfile.js';
 
 
 export default {
@@ -24,15 +24,14 @@ export default {
    */
   loginUser: async (req, res) => {
     try {
-      const
-        { email, password } = req.body,
-        user = await UserModel.findOne({ email });
-
+      const { email, password } = req.body;
+      const user = await UserModel.findOne({ email });
       if (!user) return res.status(404).json('User not found');
-      if (!await user.comparePassword(password)) return res.status(401).json('Invalid password');
+
+      if (!await UserModel.comparePassword(password, user.password_hash))
+        return res.status(401).json('Invalid password');
 
       const token = generateToken(user);
-
       res.cookie('token', token, {
         httpOnly: true,
         secure: true,
@@ -40,14 +39,14 @@ export default {
         maxAge: 3600000
       });
 
-      req.user = await mergeUserProfile(true, user._doc);
-
+      req.user = await mergeUserProfile(true, user);
       return res.status(200).json({ user: req.user });
-    }
+    } 
     catch (e) {
       return res.status(500).json('Internal Server Error');
     };
   },
+
 
   /**
    * @param {express.Request} _ 
