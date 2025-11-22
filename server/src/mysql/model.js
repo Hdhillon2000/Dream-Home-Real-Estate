@@ -181,5 +181,7 @@ class Model {
  * @param {Object} schema - Schema definition
  * @returns {Model} Model instance
  */
-export default createModel = (tableName, schema = {}) => new Model(tableName, schema);
+export default async function createModel(tableName, schema = {}) {
+  return new Model(tableName, schema);
+};
 

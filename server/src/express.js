@@ -1,26 +1,36 @@
 
-import express, { json, static as serveStatic } from 'express';
-import cors from 'cors';
+import 'dotenv/config';
 import { join } from 'path';
-import apiMaster from './routes/api_master.js';
+import express from 'express';
+
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import compress from 'compression';
+import helmet from 'helmet';
+
+import serverListener from './listener.js';
+import ApiRouteMaster from './api.route.master.js';
 
 const app = express();
 app
-  .use(cors())
-  .use(json());
+  .use(cors(
+    {
+      origin: process.env.CLIENT_URL,
+      credentials: true
+    }
+  ))
+  .use(compress())
+  .use(cookieParser())
+  .use(express.json({ limit: '10mb' }))
+  .use(express.urlencoded({ limit: '10mb', extended: true }))
+  .use(helmet())
 
-apiMaster(app);
+  .use(express.static(join(process.cwd(), 'client/dist')))
 
-if (process.env.NODE_ENV === 'production') {
-  const clientPath = join(process.cwd(), 'client/dist');
-  app
-    .use(serveStatic(clientPath))
-    .get(/^(?!\/api).*/, (_, res) => {
-      res.sendFile(join(clientPath, 'index.html'));
-    });
-};
+  .get(/^(?!\/api).*/, (_, res) => {
+    res.sendFile(join(join(process.cwd(), 'client/dist'), 'index.html'));
+  });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT} (${process.env.NODE_ENV || 'development'})`);
-});
+ApiRouteMaster(app);
+
+await serverListener(app);
