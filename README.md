@@ -33,7 +33,7 @@ Dream-Home-Real-Estate/
 ```bash
 npm install
 ```
-The npm workspace installs packages for both `client/` and `server/` in one step.
+The npm workspace manages packages for both `client/` and `server/`.
 
 ### Run the App
 - **Full stack dev mode:** `npm run dev`
@@ -43,8 +43,8 @@ The npm workspace installs packages for both `client/` and `server/` in one step
 - **Back-end only:** `npm run dev --workspace=server`
 
 ### Production Tasks
-- Lint front-end code: `npm run lint --workspace=client`
-- Build static assets: `npm run build --workspace=client`
+##### - (NYI) - Lint front-end code: `npm run lint --workspace=client`
+- Build static assets: `npm run build`
 - Serve production bundle: `npm start` (runs Express with `NODE_ENV=production` and serves `client/dist`)
 
 ## Current Status & Coordination Notes
@@ -75,3 +75,6 @@ The npm workspace installs packages for both `client/` and `server/` in one step
 1. Backend connects Express routes to Oracle stored procedures and finalizes authentication strategy.
 2. Front-end replaces placeholder loaders with live fetch calls and surfaces API validation states.
 3. Team coordinates deployment + environment configuration for production hand-off.
+---
+
+### *May your code be clean and your pancakes fluffy!* 🥞  
