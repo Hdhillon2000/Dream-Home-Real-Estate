@@ -69,9 +69,14 @@ class Model {
     };
   };
 
+  
   /**
-   * Find one record
-   * @param {Object} where - Where conditions
+   * Finds a single record matching the specified criteria.
+   * 
+   * @async
+   * @param {Object} [where={}] - The conditions to match for finding the record.
+   * @param {Object} [queryOptions={}] - Additional query options to apply to the search.
+   * @returns {Promise<Object|null>} A promise that resolves to the first matching record or null if no record is found.
    */
   async findOne(where = {}, queryOptions = {}) {
     const results = await this.find({ where, limit: 1, ...queryOptions });
@@ -87,9 +92,18 @@ class Model {
     return this.findOne({ [pkField]: id });
   };
 
+
   /**
-   * Create a new record
-   * @param {Object} data - Record data
+   * Creates a new record in the database table.
+   * 
+   * @async
+   * @param {Object} data - An object containing the field names and values to insert.
+   * @returns {Promise<Object>} A promise that resolves to an object containing the inserted data and the insertId.
+   * @throws {Error} Throws an error if the database operation fails.
+   * 
+   * @example
+   * const newRecord = await model.create({ name: 'John', age: 30 });
+   * // Returns: { name: 'John', age: 30, insertId: 1 }
    */
   async create(data) {
     const fields = Object.keys(data);
