@@ -14,6 +14,7 @@ import ClientMenu from './pages/ClientMenu.jsx';
 import PropertyList from './pages/PropertyList.jsx';
 import PropertyDetails from './pages/PropertyDetails.jsx';
 import Login from './pages/Login.jsx';
+import Logout from './pages/Logout.jsx';
 import Register from './pages/Register.jsx';
 
 export default function App() {
@@ -29,6 +30,7 @@ export default function App() {
           <Route path="properties/:propertyId" element={<PropertyDetails />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="logout" element={<Logout />} />
         </Route>
       </Routes>
     </BrowserRouter>

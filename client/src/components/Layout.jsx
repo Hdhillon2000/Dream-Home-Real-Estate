@@ -6,22 +6,39 @@
  */
 
 import { Link, Outlet } from 'react-router-dom';
-import { PRIMARY_NAV_LINKS } from '../utils/navigation.js';
+import { HOME_NAV_ITEM, MENU_ENTRIES, AUTH_ENTRIES, LOGOUT_NAV_ITEM } from '../utils/navigation.js';
 import { useAuth } from '../components/auth/AuthContext.js'
 
 import Loader from '../components/loader/loader.jsx'
 
 export default function Layout() {
 
-  const { isLoading } = useAuth();
-  return isLoading ? <Loader /> 
+  const { isLoading, isLoggedIn } = useAuth();
+  return isLoading ? <Loader />
     : (
       <div className="app-shell">
         <header className="app-header">
           <h1 className="app-header__title">Dream Home Real Estate</h1>
           <nav aria-label="Primary navigation">
             <ul className="app-header__links">
-              {PRIMARY_NAV_LINKS.map((link) => (
+
+              {[HOME_NAV_ITEM, ...MENU_ENTRIES].map((link) => (
+                <li key={link.path}>
+                  <Link to={link.path} className="app-header__link">
+                    {link.navLabel}
+                  </Link>
+                </li>
+              ))}
+
+              {isLoggedIn && (
+                <li key={LOGOUT_NAV_ITEM.path}>
+                  <Link to={LOGOUT_NAV_ITEM.path} className="app-header__link">
+                    {LOGOUT_NAV_ITEM.navLabel}
+                  </Link>
+                </li>
+              )}
+
+              {!isLoggedIn && AUTH_ENTRIES.map((link) => (
                 <li key={link.path}>
                   <Link to={link.path} className="app-header__link">
                     {link.navLabel}

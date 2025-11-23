@@ -11,6 +11,13 @@ export const HOME_NAV_ITEM = {
     cardBody: 'Return to the mission briefing for the Dream Home Real Estate portal.',
 };
 
+export const LOGOUT_NAV_ITEM = {
+    path: '/logout',
+    navLabel: 'Logout',
+    cardTitle: 'Logging Out',
+    cardBody: 'Log out of the Dream Home Real Estate portal securely.',
+};
+
 export const MENU_ENTRIES = [
   {
     path: '/staff',
