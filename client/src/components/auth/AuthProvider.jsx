@@ -1,14 +1,12 @@
 
 import { useState, useEffect } from 'react';
 import { AuthContext } from './AuthContext';
-const abortController = new AbortController();
 
 export default function AuthProvider({ children }) {
   const
     [isLoggedIn, setIsLoggedIn] = useState(false),
     [user, setUser] = useState(null),
-    [isLoading, setIsLoading] = useState(true),
-    abortController = new AbortController();
+    [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     /**
@@ -48,7 +46,6 @@ export default function AuthProvider({ children }) {
       setIsLoading(false);
     };
     checkSession();
-    return () => abortController.abort();
   }, []);
 
   /**
