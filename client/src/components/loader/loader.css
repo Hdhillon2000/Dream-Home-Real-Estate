@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* background: url('/images/logo_goodie.png') center/contain no-repeat; */
+  background: var(--color-pearl, #f9f7f3);
   z-index: 1000;
 }
 
@@ -19,24 +19,21 @@
   width: 100%;
   height: 100%;
   background:
-    linear-gradient(rgba(9, 180, 185, 0.7) 1px,
-      transparent 1px),
-    linear-gradient(90deg,
-      rgba(9, 180, 185, 0.7) 1px,
-      transparent 1px);
+    linear-gradient(var(--color-forest, #068466) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-forest, #068466) 1px, transparent 1px);
   background-size: 50px 50px;
-  opacity: 0.2;
+  opacity: 0.08;
   z-index: 0;
 }
-
 
 .spinner {
   width: 64px;
   height: 64px;
   border: 4px solid;
-  border-color: var(--primary-blue) transparent transparent transparent;
+  border-color: var(--color-forest, #068466) transparent transparent transparent;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  z-index: 1;
 }
 
 @keyframes spin {

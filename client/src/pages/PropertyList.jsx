@@ -5,8 +5,8 @@
  * @purpose Displays the portfolio of Dream Home Real Estate listings.
  */
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import PageSection from '../components/PageSection.jsx';
+import { Card } from '../components/ui/Card.jsx';
+import { Button } from '../components/ui/Button.jsx';
 import PropertyCard from '../components/PropertyCard.jsx';
 
 const STATUS_FILTERS = [
@@ -36,6 +36,8 @@ export default function PropertyList() {
   });
   const [sort, setSort] = useState('price-desc');
   const [isLoading, setIsLoading] = useState(true);
+  // DEAD CODE: activeTag state is set but never used to filter listings
+  // const [activeTag, setActiveTag] = useState(null);
 
   // Fetch properties and market summary
   useEffect(() => {
@@ -75,10 +77,10 @@ export default function PropertyList() {
     setSort(e.target.value);
   };
 
-  const handleFilterSubmit = (e) => {
-    e.preventDefault();
-    // The useEffect will automatically refetch with new filters
-  };
+  // DEAD CODE: handleFilterSubmit is never called - filtering happens via handleFilterChange
+  // const handleFilterSubmit = (e) => {
+  //   e.preventDefault();
+  // };
 
   const handleFilterReset = () => {
     setFilters({
@@ -90,181 +92,219 @@ export default function PropertyList() {
     });
   };
 
+  // DEAD CODE: handleTagClick sets activeTag but no filtering logic implemented
+  // const handleTagClick = (tag) => {
+  //   setActiveTag(activeTag === tag ? null : tag);
+  // };
+
   return (
-    <div className="page page--stacked property-list-page">
-      <header className="page__header">
-        <p className="eyebrow">Listings Portal</p>
-        <h2>Available Listings</h2>
-        <p>
-          Explore highlighted inventory across the GTA. This scaffold mirrors pro brokerage portals so backend feeds can slot in with minimal rework.
-        </p>
-        <div className="listing-metrics">
-          <article>
-            <p>Active Inventory</p>
-            <strong>{marketSummary.inventory || 0}</strong>
-          </article>
-          <article>
-            <p>Avg Days on Market</p>
-            <strong>{marketSummary.averageDaysOnMarket || 0}</strong>
-          </article>
-          <article>
-            <p>Median List Price</p>
-            <strong>{marketSummary.medianPrice || 'N/A'}</strong>
-          </article>
-          <article>
-            <p>Last Refreshed</p>
-            <strong>{marketSummary.lastUpdated || new Date().toLocaleDateString()}</strong>
-          </article>
-        </div>
-        <div className="listing-actions">
-          <button type="button">Save Search</button>
-          <button type="button" className="button--ghost">
-            Share Collection
-          </button>
-        </div>
-      </header>
+    <div className="bg-pearl min-h-screen">
+      {/* Hero Header */}
+      <section className="section-top pb-8 bg-white">
+        <div className="container-lg">
+          <div className="text-center max-w-3xl mx-auto">
+            <p className="eyebrow">Listings Portal</p>
+            <h1 className="text-h1 mb-4">Available Properties</h1>
+            <p className="text-xl text-deepsea/70">
+              Explore highlighted inventory across the GTA.
+            </p>
+          </div>
 
-      <PageSection
-        title="Search Filters"
-        description="Filters are now connected to the backend API."
-      >
-        <form className="listing-filters" onSubmit={handleFilterSubmit}>
-          <label>
-            Status
-            <select
-              name="status"
-              value={filters.status}
-              onChange={handleFilterChange}
-            >
-              {STATUS_FILTERS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
+          {/* Market Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10 max-w-4xl mx-auto">
+            <Card variant="fog" padding="sm" className="text-center">
+              <p className="text-h3 text-forest font-heading">{marketSummary.inventory || 0}</p>
+              <p className="text-sm text-deepsea/60">Active Listings</p>
+            </Card>
+            <Card variant="fog" padding="sm" className="text-center">
+              <p className="text-h3 text-forest font-heading">{marketSummary.averageDaysOnMarket || 0}</p>
+              <p className="text-sm text-deepsea/60">Avg Days on Market</p>
+            </Card>
+            <Card variant="fog" padding="sm" className="text-center">
+              <p className="text-h3 text-forest font-heading">{marketSummary.medianPrice || 'N/A'}</p>
+              <p className="text-sm text-deepsea/60">Median Price</p>
+            </Card>
+            <Card variant="fog" padding="sm" className="text-center">
+              <p className="text-h3 text-forest font-heading">{marketSummary.lastUpdated || 'Today'}</p>
+              <p className="text-sm text-deepsea/60">Last Refreshed</p>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Filters Section */}
+      <section className="section bg-pearl">
+        <div className="container-lg">
+          <Card variant="white" className="mb-8">
+            <h3 className="text-h4 mb-6">Search Filters</h3>
+            <form onSubmit={(e) => e.preventDefault()}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div>
+                  <label className="form-label">Status</label>
+                  <select
+                    name="status"
+                    className="form-select"
+                    value={filters.status}
+                    onChange={handleFilterChange}
+                  >
+                    {STATUS_FILTERS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="form-label">Bedrooms</label>
+                  <select
+                    name="beds"
+                    className="form-select"
+                    value={filters.beds}
+                    onChange={handleFilterChange}
+                  >
+                    {BED_FILTERS.map((label) => (
+                      <option key={label} value={label}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="form-label">Price Range</label>
+                  <select
+                    name="priceRange"
+                    className="form-select"
+                    value={filters.priceRange}
+                    onChange={handleFilterChange}
+                  >
+                    <option value="all">All Prices</option>
+                    <option value="under1m">Under $1M</option>
+                    <option value="1to2">$1M - $2M</option>
+                    <option value="over2">Over $2M</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="form-label">Neighborhood</label>
+                  <input
+                    type="text"
+                    name="neighborhood"
+                    className="form-input"
+                    placeholder="e.g., Distillery, Leaside"
+                    value={filters.neighborhood}
+                    onChange={handleFilterChange}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-end">
+                <div className="lg:col-span-2">
+                  <label className="form-label">Keyword Search</label>
+                  <input
+                    type="text"
+                    name="keyword"
+                    className="form-input"
+                    placeholder="View, pool, smart home..."
+                    value={filters.keyword}
+                    onChange={handleFilterChange}
+                  />
+                </div>
+                <div className="flex gap-3">
+                  <Button type="submit" variant="forest">
+                    Apply Filters
+                  </Button>
+                  <Button type="button" variant="ghost" onClick={handleFilterReset}>
+                    Reset
+                  </Button>
+                </div>
+              </div>
+            </form>
+          </Card>
+
+          {/* Sort & Tags */}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
+            {/* DEAD CODE: Tag filtering UI - functionality not implemented, kept for future use */}
+            <div className="flex flex-wrap gap-2">
+              {LIFESTYLE_TAGS.map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  // onClick={() => handleTagClick(tag)} // DEAD CODE: handler commented out
+                  className="px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-deepsea border border-borderGrey hover:border-forest hover:bg-fog"
+                >
+                  {tag}
+                </button>
               ))}
-            </select>
-          </label>
-          <label>
-            Beds
-            <select
-              name="beds"
-              value={filters.beds}
-              onChange={handleFilterChange}
-            >
-              {BED_FILTERS.map((label) => (
-                <option key={label} value={label}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Price Range
-            <select
-              name="priceRange"
-              value={filters.priceRange}
-              onChange={handleFilterChange}
-            >
-              <option value="all">All</option>
-              <option value="under1m">Under $1M</option>
-              <option value="1to2">$1M - $2M</option>
-              <option value="over2">Over $2M</option>
-            </select>
-          </label>
-          <label>
-            Neighborhood
-            <input
-              type="text"
-              name="neighborhood"
-              placeholder="e.g., Distillery, Leaside"
-              value={filters.neighborhood}
-              onChange={handleFilterChange}
-            />
-          </label>
-          <label className="listing-filters__full">
-            Keyword
-            <input
-              type="text"
-              name="keyword"
-              placeholder="View, pool, smart home..."
-              value={filters.keyword}
-              onChange={handleFilterChange}
-            />
-          </label>
-          <div className="listing-filters__actions">
-            <button type="submit">Apply Filters</button>
-            <button type="button" className="button--ghost" onClick={handleFilterReset}>
-              Reset
-            </button>
+            </div>
+            <div className="flex items-center gap-3">
+              <label className="text-sm text-deepsea/70">Sort by:</label>
+              <select
+                className="form-select py-2"
+                value={sort}
+                onChange={handleSortChange}
+              >
+                {SORT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        </form>
-      </PageSection>
 
-      <PageSection title="Sort & Lifestyle Tags" description="Sorting ties into MLS feeds; tags mirror persona-driven curation.">
-        <div className="listing-toolbar">
-          <label>
-            Sort Results
-            <select
-              value={sort}
-              onChange={handleSortChange}
-            >
-              {SORT_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="listing-toolbar__tags">
-            {LIFESTYLE_TAGS.map((tag) => (
-              <button key={tag} type="button" className="listing-tag">
-                {tag}
-              </button>
-            ))}
+          {/* Property Grid */}
+          <div className="mb-8">
+            <h2 className="text-h3 mb-6">Featured Properties</h2>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-16">
+                <div className="spinner" />
+              </div>
+            ) : listings.length === 0 ? (
+              <Card variant="white" className="text-center py-12">
+                <p className="text-deepsea/60">No properties match your criteria.</p>
+                <Button variant="outline" size="sm" className="mt-4" onClick={handleFilterReset}>
+                  Clear Filters
+                </Button>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {listings.map((listing) => (
+                  <PropertyCard key={listing.property_id} property={listing} />
+                ))}
+              </div>
+            )}
           </div>
-          <div className="listing-toolbar__cta">
-            <p>Stay ahead of new releases in your favourite neighbourhoods.</p>
-            <button type="button">Create Alert</button>
+
+          {/* Market Intelligence */}
+          <div className="mb-8">
+            <h2 className="text-h3 mb-6">Market Intelligence</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Card variant="white" hover className="border border-borderGrey">
+                <h4 className="text-h5 text-deepsea mb-2">Hot Price Bands</h4>
+                <p className="text-sm text-deepsea/70">
+                  $1.2M - $1.6M accounted for 62% of accepted offers last week.
+                </p>
+              </Card>
+              <Card variant="white" hover className="border border-borderGrey">
+                <h4 className="text-h5 text-deepsea mb-2">Neighbourhood Watch</h4>
+                <p className="text-sm text-deepsea/70">
+                  Leaside and Distillery listings are averaging 2.1 tours before offer.
+                </p>
+              </Card>
+              <Card variant="white" hover className="border border-borderGrey">
+                <h4 className="text-h5 text-deepsea mb-2">Buyer Signals</h4>
+                <p className="text-sm text-deepsea/70">
+                  Tour requests spike between 7-9 PM. Keep CTA prominent for mobile.
+                </p>
+              </Card>
+              <Card variant="white" hover className="border border-borderGrey">
+                <h4 className="text-h5 text-deepsea mb-2">Coming Soon</h4>
+                <p className="text-sm text-deepsea/70">
+                  Interactive map, school layers, and mortgage rate widgets.
+                </p>
+              </Card>
+            </div>
           </div>
         </div>
-      </PageSection>
-
-      <PageSection title="Featured Properties" description="Cards now show real data from the API.">
-        {isLoading ? (
-          <p>Loading properties...</p>
-        ) : listings.length === 0 ? (
-          <p>No properties match your criteria.</p>
-        ) : (
-          <div className="property-grid">
-            {listings.map((listing) => (
-              <PropertyCard heroImage={listing.hero_image} key={listing.property_id} property={listing} />
-            ))}
-          </div>
-        )}
-      </PageSection>
-
-      <PageSection
-        title="Market Intelligence"
-        description="Embed lightweight trust signals so clients see us as advisors, not only transaction managers."
-      >
-        <div className="listing-intel">
-          <article>
-            <h4>Hot Price Bands</h4>
-            <p>$1.2M - $1.6M accounted for 62% of accepted offers last week.</p>
-          </article>
-          <article>
-            <h4>Neighbourhood Watch</h4>
-            <p>Leaside and Distillery listings are averaging 2.1 tours before offer.</p>
-          </article>
-          <article>
-            <h4>Buyer Signals</h4>
-            <p>Tour requests spike between 7-9 PM. Keep CTA prominent for mobile visitors.</p>
-          </article>
-          <article>
-            <h4>Coming Soon</h4>
-            <p>Interactive map, school layers, and mortgage rate widgets land mid-sprint.</p>
-          </article>
-        </div>
-      </PageSection>
+      </section>
     </div>
   );
-};
+}
