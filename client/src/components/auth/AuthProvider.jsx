@@ -39,6 +39,7 @@ export default function AuthProvider({ children }) {
         };
       }
       catch (e) {
+        // DEAD CODE: Disabled debug logging - uncomment for troubleshooting
         // console.error('Session check failed:', e);
         setIsLoggedIn(false);
         setUser(null);
@@ -85,6 +86,7 @@ export default function AuthProvider({ children }) {
       return { success: true };
     }
     catch (e) {
+      // DEAD CODE: Disabled debug logging - uncomment for troubleshooting
       // console.error('Login error:', e);
       return { success: false, message: e.message };
     };
@@ -145,6 +147,7 @@ export default function AuthProvider({ children }) {
       return { success: true };
     }
     catch (e) {
+      // DEAD CODE: Disabled debug logging - uncomment for troubleshooting
       // console.error('Logout error:', e);
       return { success: false, message: e.message };
     };

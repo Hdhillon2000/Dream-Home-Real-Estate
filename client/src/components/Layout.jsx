@@ -2,57 +2,46 @@
  * @file Layout.jsx
  * @author Alex Kachur
  * @since 2025-10-31
- * @purpose Provides the shared page chrome including header navigation.
+ * @purpose Provides the shared page chrome with header and footer.
  */
-
-import { Link, Outlet } from 'react-router-dom';
-import { HOME_NAV_ITEM, MENU_ENTRIES, AUTH_ENTRIES, LOGOUT_NAV_ITEM } from '../utils/navigation.js';
-import { useAuth } from '../components/auth/AuthContext.js'
-
-import Loader from '../components/loader/loader.jsx'
+import React from 'react'
+import { Outlet } from 'react-router-dom'
+import { useAuth } from './auth/AuthContext.js'
+import Loader from './loader/loader.jsx'
+import Header from './layout/Header.jsx'
+import Footer from './layout/Footer.jsx'
 
 export default function Layout() {
+  const { isLoading } = useAuth()
 
-  const { isLoading, isLoggedIn } = useAuth();
-  return isLoading ? <Loader />
-    : (
-      <div className="app-shell">
-        <header className="app-header">
-          <h1 className="app-header__title">Dream Home Real Estate</h1>
-          <nav aria-label="Primary navigation">
-            <ul className="app-header__links">
-
-              {[HOME_NAV_ITEM, ...MENU_ENTRIES].map((link) => (
-                <li key={link.path}>
-                  <Link to={link.path} className="app-header__link">
-                    {link.navLabel}
-                  </Link>
-                </li>
-              ))}
-
-              {isLoggedIn && (
-                <li key={LOGOUT_NAV_ITEM.path}>
-                  <Link to={LOGOUT_NAV_ITEM.path} className="app-header__link">
-                    {LOGOUT_NAV_ITEM.navLabel}
-                  </Link>
-                </li>
-              )}
-
-              {!isLoggedIn && AUTH_ENTRIES.map((link) => (
-                <li key={link.path}>
-                  <Link to={link.path} className="app-header__link">
-                    {link.navLabel}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </header>
-
-        <main className="app-main">
-          {/* Outlet renders the currently matched route content */}
-          <Outlet />
-        </main>
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-pearl flex items-center justify-center">
+        <Loader />
       </div>
-    );
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-pearl flex flex-col">
+      {/* Skip to main content for accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:bg-forest focus:text-white focus:rounded-full"
+      >
+        Skip to main content
+      </a>
+
+      {/* Header */}
+      <Header />
+
+      {/* Main Content */}
+      <main id="main-content" className="flex-1">
+        <Outlet />
+      </main>
+
+      {/* Footer */}
+      <Footer />
+    </div>
+  )
 }

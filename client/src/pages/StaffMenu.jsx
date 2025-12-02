@@ -6,7 +6,8 @@
  */
 import { useEffect, useState } from 'react';
 import { useAuth } from '../components/auth/AuthContext.js';
-import PageSection from '../components/PageSection.jsx';
+import { Card } from '../components/ui/Card.jsx';
+import { Button } from '../components/ui/Button.jsx';
 
 export default function StaffMenu() {
   const [staffRecords, setStaffRecords] = useState([]);
@@ -78,7 +79,6 @@ export default function StaffMenu() {
       if (response.ok) {
         const result = await response.json();
         setStaffRecords(prev => [...prev, result.staff]);
-        // Reset form
         setFormData({
           staff_id: '',
           firstName: '',
@@ -118,7 +118,8 @@ export default function StaffMenu() {
     });
   };
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (event) => {
+    event.preventDefault();
     try {
       const response = await fetch(`/api/staff/${editingId}`, {
         method: 'PATCH',
@@ -147,7 +148,6 @@ export default function StaffMenu() {
           )
         );
         setEditingId(null);
-        // Reset form
         setFormData({
           staff_id: '',
           firstName: '',
@@ -173,7 +173,6 @@ export default function StaffMenu() {
 
   const handleCancelEdit = () => {
     setEditingId(null);
-    // Reset form
     setFormData({
       staff_id: '',
       firstName: '',
@@ -189,197 +188,228 @@ export default function StaffMenu() {
   };
 
   return (
-    <div className="page page--stacked">
-      <header className="page__header">
-        <h2>Staff Administration</h2>
-        <p>
-          {user?.role === 'admin' ?
-            'Manage team members and keep records current.' :
-            'View team members (contact an admin for changes).'}
-        </p>
-      </header>
-      {user?.role === 'admin' && (
-        <PageSection
-          title={editingId ? "Update Staff Member" : "Hire Staff"}
-          description={editingId ?
-            "Update the details for the selected staff member." :
-            "Collect the required onboarding details for new team members."}
-        >
-          <form className="form-grid" onSubmit={editingId ? handleUpdate : handleSubmit}>
-            <label>
-              Staff ID
-              <input
-                type="text"
-                name="staff_id"
-                placeholder="DH104"
-                value={formData.staff_id}
-                onChange={handleInputChange}
-                required
-                readOnly={!!editingId}
-              />
-            </label>
-            <label>
-              First Name
-              <input
-                type="text"
-                name="firstName"
-                placeholder="Alex"
-                value={formData.firstName}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>
-              Last Name
-              <input
-                type="text"
-                name="lastName"
-                placeholder="Kachur"
-                value={formData.lastName}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>
-              Position
-              <input
-                type="text"
-                name="position"
-                placeholder="Sales Associate"
-                value={formData.position}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>
-              Branch Number
-              <input
-                type="text"
-                name="branchNo"
-                placeholder="B001"
-                value={formData.branchNo}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>
-              Date of Birth
-              <input
-                type="date"
-                name="dob"
-                value={formData.dob}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              Salary
-              <input
-                type="number"
-                name="salary"
-                min="0"
-                step="0.01"
-                placeholder="55000"
-                value={formData.salary}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>
-              Telephone
-              <input
-                type="tel"
-                name="telephone"
-                placeholder="416-555-1234"
-                value={formData.telephone}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              Mobile
-              <input
-                type="tel"
-                name="mobile"
-                placeholder="437-555-9876"
-                value={formData.mobile}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label className="form-grid__full">
-              Email
-              <input
-                type="email"
-                name="email"
-                placeholder="alex.kachur@example.com"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <div className="form-actions">
-              <button type="submit">
-                {editingId ? 'Update Staff' : 'Schedule Hire'}
-              </button>
-              {(editingId || formData.staff_id) && (
-                <button
-                  type="button"
-                  className="button--ghost"
-                  onClick={handleCancelEdit}
-                >
-                  Cancel
-                </button>
-              )}
-            </div>
-          </form>
-        </PageSection>
-      )}
+    <div className="bg-pearl min-h-screen">
+      {/* Page Header */}
+      <section className="section-top pb-8 bg-white">
+        <div className="container-lg">
+          <p className="eyebrow">Administration</p>
+          <h1 className="text-h1 mb-4">Staff Directory</h1>
+          <p className="text-xl text-deepsea/70 max-w-2xl">
+            {user?.role === 'admin' ?
+              'Manage team members and keep records current.' :
+              'View team members (contact an admin for changes).'}
+          </p>
+        </div>
+      </section>
 
-      <PageSection
-        title="Staff Directory"
-        description="View and manage staff contact information."
-      >
-        {isLoading ? (
-          <p>Loading staff records...</p>
-        ) : (
-          <>
-            {staffRecords.length === 0 ? (
-              <p>No staff records found.</p>
-            ) : (
-              <div role="table" className="table-placeholder">
-                <div role="row" className="table-placeholder__row table-placeholder__row--head">
-                  <span>ID</span>
-                  <span>Name</span>
-                  <span>Position</span>
-                  <span>Salary</span>
-                  <span>Phone</span>
-                  <span>Email</span>
-                  {user?.role === 'admin' && <span>Actions</span>}
+      <section className="section bg-pearl">
+        <div className="container-lg">
+          {/* Form Section (Admin only) */}
+          {user?.role === 'admin' && (
+            <Card variant="white" className="mb-8">
+              <h3 className="text-h4 mb-2">
+                {editingId ? "Update Staff Member" : "Add New Staff"}
+              </h3>
+              <p className="text-deepsea/60 mb-6">
+                {editingId ?
+                  "Update the details for the selected staff member." :
+                  "Collect the required onboarding details for new team members."}
+              </p>
+
+              <form onSubmit={editingId ? handleUpdate : handleSubmit}>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                  <div>
+                    <label className="form-label">Staff ID</label>
+                    <input
+                      type="text"
+                      name="staff_id"
+                      className="form-input"
+                      placeholder="DH104"
+                      value={formData.staff_id}
+                      onChange={handleInputChange}
+                      required
+                      readOnly={!!editingId}
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label">First Name</label>
+                    <input
+                      type="text"
+                      name="firstName"
+                      className="form-input"
+                      placeholder="Alex"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label">Last Name</label>
+                    <input
+                      type="text"
+                      name="lastName"
+                      className="form-input"
+                      placeholder="Kachur"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label">Position</label>
+                    <input
+                      type="text"
+                      name="position"
+                      className="form-input"
+                      placeholder="Sales Associate"
+                      value={formData.position}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label">Branch Number</label>
+                    <input
+                      type="text"
+                      name="branchNo"
+                      className="form-input"
+                      placeholder="B001"
+                      value={formData.branchNo}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label">Date of Birth</label>
+                    <input
+                      type="date"
+                      name="dob"
+                      className="form-input"
+                      value={formData.dob}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label">Salary</label>
+                    <input
+                      type="number"
+                      name="salary"
+                      className="form-input"
+                      min="0"
+                      step="0.01"
+                      placeholder="55000"
+                      value={formData.salary}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label">Telephone</label>
+                    <input
+                      type="tel"
+                      name="telephone"
+                      className="form-input"
+                      placeholder="416-555-1234"
+                      value={formData.telephone}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label">Mobile</label>
+                    <input
+                      type="tel"
+                      name="mobile"
+                      className="form-input"
+                      placeholder="437-555-9876"
+                      value={formData.mobile}
+                      onChange={handleInputChange}
+                    />
+                  </div>
                 </div>
-                {staffRecords.map((staff) => (
-                  <div role="row" className="table-placeholder__row" key={staff.staff_id}>
-                    <span>{staff.staff_id}</span>
-                    <span>{staff.first_name} {staff.last_name}</span>
-                    <span>{staff.position}</span>
-                    <span>${staff.salary.toLocaleString()}</span>
-                    <span>{staff.telephone || 'N/A'}</span>
-                    <span>{staff.email}</span>
-                    {user?.role === 'admin' && (
-                      <span>
-                        <button
-                          type="button"
-                          className="button--ghost"
-                          onClick={() => handleEdit(staff)}
-                        >
-                          Edit
-                        </button>
-                      </span>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-end">
+                  <div className="lg:col-span-2">
+                    <label className="form-label">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      className="form-input"
+                      placeholder="alex.kachur@example.com"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="flex gap-3">
+                    <Button type="submit" variant="forest">
+                      {editingId ? 'Update Staff' : 'Add Staff'}
+                    </Button>
+                    {(editingId || formData.staff_id) && (
+                      <Button type="button" variant="ghost" onClick={handleCancelEdit}>
+                        Cancel
+                      </Button>
                     )}
                   </div>
-                ))}
+                </div>
+              </form>
+            </Card>
+          )}
+
+          {/* Staff Directory Table */}
+          <Card variant="white">
+            <h3 className="text-h4 mb-6">All Staff Members</h3>
+
+            {isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="spinner" />
+              </div>
+            ) : staffRecords.length === 0 ? (
+              <p className="text-deepsea/60 py-8 text-center">No staff records found.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="data-table">
+                  <thead className="data-table__header">
+                    <tr>
+                      <th className="data-table__cell text-left">ID</th>
+                      <th className="data-table__cell text-left">Name</th>
+                      <th className="data-table__cell text-left">Position</th>
+                      <th className="data-table__cell text-left">Salary</th>
+                      <th className="data-table__cell text-left">Phone</th>
+                      <th className="data-table__cell text-left">Email</th>
+                      {user?.role === 'admin' && (
+                        <th className="data-table__cell text-right">Actions</th>
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {staffRecords.map((staff) => (
+                      <tr key={staff.staff_id} className="data-table__row">
+                        <td className="data-table__cell font-medium">{staff.staff_id}</td>
+                        <td className="data-table__cell">{staff.first_name} {staff.last_name}</td>
+                        <td className="data-table__cell">{staff.position}</td>
+                        <td className="data-table__cell">${staff.salary?.toLocaleString()}</td>
+                        <td className="data-table__cell">{staff.telephone || 'N/A'}</td>
+                        <td className="data-table__cell">{staff.email}</td>
+                        {user?.role === 'admin' && (
+                          <td className="data-table__cell text-right">
+                            <button
+                              type="button"
+                              className="text-forest hover:text-deepsea font-medium transition-colors"
+                              onClick={() => handleEdit(staff)}
+                            >
+                              Edit
+                            </button>
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
-          </>
-        )}
-      </PageSection>
+          </Card>
+        </div>
+      </section>
     </div>
   );
 }

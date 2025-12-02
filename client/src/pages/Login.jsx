@@ -4,23 +4,22 @@
  * @since 2025-11-03
  * @purpose Presents the sign-in form for authentication.
  */
-
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../components/auth/AuthContext.js';
-import PageSection from '../components/PageSection.jsx';
+import { Card } from '../components/ui/Card.jsx';
+import { Button } from '../components/ui/Button.jsx';
+import { Logo } from '../components/ui/Logo.jsx';
 
 export default function Login() {
-
-  const
-    navigate = useNavigate(),
-    [formData, setFormData] = useState({
-      email: '',
-      password: ''
-    }),
-    [status, setStatus] = useState(''),
-    [isLoading, setIsLoading] = useState(false),
-    { login } = useAuth();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [status, setStatus] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -36,75 +35,112 @@ export default function Login() {
       const result = await login(formData.email, formData.password);
       if (result.success) {
         setStatus('Login successful! Redirecting...');
-
         setTimeout(() => {
-          navigate('/'); // @AlexKuchur: Redirect to dashboard/loggedIn Page or home page after login
+          navigate('/');
         }, 1000);
-      }
-      else {
+      } else {
         setStatus(result.message || 'Login failed. Please check your credentials.');
-      };
-    }
-    catch (error) {
+      }
+    } catch (error) {
       setStatus('An unexpected error occurred. Please try again.');
-    }
-    finally {
+    } finally {
       setIsLoading(false);
-    };
+    }
   };
 
+  const isError = status.includes('failed') || status.includes('error') || status.includes('Error');
+
   return (
-    <div className="page page--stacked">
-      <header className="page__header">
-        <h2>Welcome Back</h2>
-        <p>Sign in to access the Dream Home Real Estate management tools.</p>
-      </header>
+    <div className="min-h-screen bg-pearl flex items-center justify-center pt-24 pb-12 px-4">
+      <div className="w-full max-w-md">
+        {/* Logo/Brand */}
+        <div className="flex justify-center mb-8">
+          <Logo size="large" />
+        </div>
 
-      <PageSection
-        title="Account Login"
-        description="Enter the credentials issued by your platform administrator."
-      >
-        <form className="form-grid form-grid--narrow" onSubmit={handleSubmit}>
-
-          <label className="form-grid__full">
-            Email Address
-            <input
-              type="email"
-              name="email"
-              autoComplete="username"
-              placeholder="alex.kachur@example.com"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          <label className="form-grid__full">
-            Password
-            <input
-              type="password"
-              name="password"
-              autoComplete="current-password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          <div className="form-actions form-actions--aligned">
-            <button type="submit" disabled={isLoading}>
-              {isLoading ? 'Signing In...' : 'Sign In'}
-            </button>
-            <span className={`form-status ${status.includes('failed') || status.includes('error') ? 'form-status--error' : ''}`} role="status">
-              {status}
-            </span>
+        {/* Login Card */}
+        <Card variant="white" className="p-8">
+          <div className="text-center mb-6">
+            <h2 className="text-h4 mb-2">Welcome Back</h2>
+            <p className="text-deepsea/60">
+              Sign in to access your management tools
+            </p>
           </div>
 
-        </form>
-      </PageSection>
+          <form onSubmit={handleSubmit}>
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="form-label">Email Address</label>
+                <input
+                  type="email"
+                  name="email"
+                  className="form-input"
+                  autoComplete="username"
+                  placeholder="you@example.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
+              <div>
+                <label className="form-label">Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  className="form-input"
+                  autoComplete="current-password"
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Status Message */}
+            {status && (
+              <div
+                className={`mb-4 p-3 rounded-lg text-sm ${
+                  isError
+                    ? 'bg-red-50 text-red-700 border border-red-200'
+                    : 'bg-fog text-forest border border-forest/20'
+                }`}
+                role="status"
+              >
+                {status}
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              variant="forest"
+              className="w-full"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Signing In...' : 'Sign In'}
+            </Button>
+          </form>
+
+          {/* Register Link */}
+          <div className="mt-6 pt-6 border-t border-pampas text-center">
+            <p className="text-deepsea/60 text-sm">
+              Need an account?{' '}
+              <Link
+                to="/register"
+                className="text-forest hover:text-deepsea font-medium transition-colors"
+              >
+                Request access
+              </Link>
+            </p>
+          </div>
+        </Card>
+
+        {/* Help Text */}
+        <p className="text-center text-sm text-deepsea/50 mt-6">
+          Contact your administrator if you need assistance
+        </p>
+      </div>
     </div>
   );
-
-};
+}

@@ -1,7 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../components/auth/AuthContext.js';
-import PageSection from './PageSection.jsx';
+import { useAuth } from './auth/AuthContext.js';
+// Updated to use new design system components
+import { Card } from './ui/Card.jsx';
 
 export default function ShowingsAdmin() {
   const [showings, setShowings] = useState([]);
@@ -11,12 +11,9 @@ export default function ShowingsAdmin() {
   useEffect(() => {
     const fetchShowings = async () => {
       try {
-        // For admins, fetch all showings
-        // For agents, fetch only showings for their properties
         let url = '/api/showings/user';
         if (user.role === 'admin') {
-          // Admin can see all showings (would need additional endpoint)
-          // For now, we'll just show the user's showings
+          url = '/api/showings';
         }
 
         const response = await fetch(url, {
@@ -59,8 +56,8 @@ export default function ShowingsAdmin() {
         );
         alert('Showing status updated successfully!');
       } else {
-        const error = await response.json();
-        alert(`Error: ${error.message}`);
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message}`);
       }
     } catch (error) {
       console.error('Error updating showing status:', error);
@@ -68,56 +65,93 @@ export default function ShowingsAdmin() {
     }
   };
 
-  return (
-    <div className="page page--stacked">
-      <header className="page__header">
-        <h2>Showing Management</h2>
-        <p>View and manage property showing requests.</p>
-      </header>
+  const getStatusBadgeClass = (status) => {
+    switch (status) {
+      case 'confirmed':
+        return 'bg-forest text-white';
+      case 'completed':
+        return 'bg-sea text-white';
+      case 'cancelled':
+        return 'bg-red-100 text-red-700';
+      default:
+        return 'bg-fog text-deepsea';
+    }
+  };
 
-      <PageSection title="Your Showings" description="View and manage your scheduled property showings.">
-        {isLoading ? (
-          <p>Loading showings...</p>
-        ) : showings.length === 0 ? (
-          <p>No showings found.</p>
-        ) : (
-          <div role="table" className="table-placeholder">
-            <div role="row" className="table-placeholder__row table-placeholder__row--head">
-              <span>Property</span>
-              <span>Requested Time</span>
-              <span>Client</span>
-              <span>Status</span>
-              <span>Actions</span>
-            </div>
-            {showings.map((showing) => (
-              <div role="row" className="table-placeholder__row" key={showing.showing_id}>
-                <span>{showing.property_id}</span>
-                <span>{new Date(showing.requested_time).toLocaleString()}</span>
-                <span>
-                  {showing.user_id ? 'Registered User' : `${showing.requested_by_name || 'Anonymous'}`}
-                </span>
-                <span>{showing.status}</span>
-                <span>
-                  {showing.status !== 'completed' && showing.status !== 'cancelled' && (
-                    <>
-                      <select
-                        value={showing.status}
-                        onChange={(e) => handleStatusUpdate(showing.showing_id, e.target.value)}
-                      >
-                        <option value="requested">Requested</option>
-                        <option value="confirmed">Confirm</option>
-                        <option value="completed">Complete</option>
-                        <option value="cancelled">Cancel</option>
-                      </select>
-                    </>
-                  )}
-                </span>
+  return (
+    <div className="bg-pearl min-h-screen">
+      {/* Page Header */}
+      <section className="section-top pb-8 bg-white">
+        <div className="container-lg">
+          <p className="eyebrow">Administration</p>
+          <h1 className="text-h1 mb-4">Showing Management</h1>
+          <p className="text-xl text-deepsea/70 max-w-2xl">
+            View and manage property showing requests from prospective buyers.
+          </p>
+        </div>
+      </section>
+
+      <section className="section bg-pearl">
+        <div className="container-lg">
+          <Card variant="white">
+            <h3 className="text-h4 mb-6">Scheduled Showings</h3>
+
+            {isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="spinner" />
               </div>
-            ))}
-          </div>
-        )}
-      </PageSection>
+            ) : showings.length === 0 ? (
+              <p className="text-deepsea/60 py-8 text-center">No showings found.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="data-table">
+                  <thead className="data-table__header">
+                    <tr>
+                      <th className="data-table__cell text-left">Property</th>
+                      <th className="data-table__cell text-left">Requested Time</th>
+                      <th className="data-table__cell text-left">Client</th>
+                      <th className="data-table__cell text-left">Status</th>
+                      <th className="data-table__cell text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {showings.map((showing) => (
+                      <tr key={showing.showing_id} className="data-table__row">
+                        <td className="data-table__cell font-medium">{showing.property_id}</td>
+                        <td className="data-table__cell">
+                          {new Date(showing.requested_time).toLocaleString()}
+                        </td>
+                        <td className="data-table__cell">
+                          {showing.user_id ? 'Registered User' : (showing.requested_by_name || 'Anonymous')}
+                        </td>
+                        <td className="data-table__cell">
+                          <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getStatusBadgeClass(showing.status)}`}>
+                            {showing.status}
+                          </span>
+                        </td>
+                        <td className="data-table__cell text-right">
+                          {showing.status !== 'completed' && showing.status !== 'cancelled' && (
+                            <select
+                              value={showing.status}
+                              onChange={(e) => handleStatusUpdate(showing.showing_id, e.target.value)}
+                              className="form-select py-1 text-sm"
+                            >
+                              <option value="requested">Requested</option>
+                              <option value="confirmed">Confirm</option>
+                              <option value="completed">Complete</option>
+                              <option value="cancelled">Cancel</option>
+                            </select>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Card>
+        </div>
+      </section>
     </div>
   );
-};
-
+}
