@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: dream-home-real-estate
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: SERVER_URL
+        sync: false
+      - key: CLIENT_URL
+        sync: false
+    secretFiles:
+      - path: /etc/secrets/ec-private-key.pem
+        name: EC_PRIVATE_KEY
+      - path: /etc/secrets/ec-public-key.pem
+        name: EC_PUBLIC_KEY
