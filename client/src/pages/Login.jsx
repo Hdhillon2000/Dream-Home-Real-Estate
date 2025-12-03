@@ -32,14 +32,16 @@ export default function Login() {
     setStatus('');
 
     try {
-      const result = await login(formData.email, formData.password);
-      if (result.success) {
+      const {success, message} = await login(formData.email, formData.password);
+      if (success) {
         setStatus('Login successful! Redirecting...');
         setTimeout(() => {
           navigate('/');
         }, 1000);
-      } else {
-        setStatus(result.message || 'Login failed. Please check your credentials.');
+      } 
+      else {
+        // console.log('Login failed:', message);
+        setStatus(message || 'Login failed. Please check your credentials.');
       }
     } catch (error) {
       setStatus('An unexpected error occurred. Please try again.');
@@ -47,8 +49,6 @@ export default function Login() {
       setIsLoading(false);
     }
   };
-
-  const isError = status.includes('failed') || status.includes('error') || status.includes('Error');
 
   return (
     <div className="min-h-screen bg-pearl flex items-center justify-center pt-24 pb-12 px-4">
@@ -101,11 +101,7 @@ export default function Login() {
             {/* Status Message */}
             {status && (
               <div
-                className={`mb-4 p-3 rounded-lg text-sm ${
-                  isError
-                    ? 'bg-red-50 text-red-700 border border-red-200'
-                    : 'bg-fog text-forest border border-forest/20'
-                }`}
+                className={`mb-4 p-3 rounded-lg text-sm ${'bg-red-50 text-red-700 border border-red-200'}`}
                 role="status"
               >
                 {status}

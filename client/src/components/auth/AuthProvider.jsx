@@ -76,7 +76,11 @@ export default function AuthProvider({ children }) {
         credentials: 'include'
       });
 
-      if (!res.ok) throw new Error((await res.json()).message);
+      if (!res.ok) {
+        const data = await res.json();
+        // console.log('Login failed response:', data);
+        throw new Error(data);
+      }
 
       const data = await res.json();
 
@@ -87,7 +91,7 @@ export default function AuthProvider({ children }) {
     }
     catch (e) {
       // DEAD CODE: Disabled debug logging - uncomment for troubleshooting
-      // console.error('Login error:', e);
+      // console.error('Login error:', e.message);
       return { success: false, message: e.message };
     };
   };
