@@ -13,7 +13,9 @@ export default {
    * @returns 
    */
   validate: async (req, res) => {
-    // req.user = await mergeUserProfile(false, req.user);
+    const user = await UserModel.findById(req.user.user_id);
+    if (!user) return res.status(404).json('User not found');
+    req.user = await mergeUserProfile(false, user);
     return res.status(200).json({ user: req.user });
   },
 

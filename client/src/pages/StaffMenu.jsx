@@ -30,6 +30,7 @@ export default function StaffMenu() {
   // Fetch staff records
   useEffect(() => {
     const fetchStaff = async () => {
+      // console.log("Fetching staff records...", user);
       try {
         const response = await fetch('/api/staff', {
           credentials: 'include'
