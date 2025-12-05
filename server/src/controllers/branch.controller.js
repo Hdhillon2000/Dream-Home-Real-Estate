@@ -59,7 +59,7 @@ export default {
 
       const connection = await pool.getConnection();
       try {
-        await connection.query(
+        await connection.execute(
           'CALL new_branch(?, ?, ?, ?, @success, @message)',
           [
             branchData.branch_no,

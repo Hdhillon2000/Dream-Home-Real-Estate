@@ -17,7 +17,7 @@ export default function Login() {
     email: '',
     password: ''
   });
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState({ success: null, message: '' });
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
 
@@ -29,23 +29,26 @@ export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
-    setStatus('');
+    setStatus({ success: null, message: '' });
 
     try {
       const {success, message} = await login(formData.email, formData.password);
       if (success) {
-        setStatus('Login successful! Redirecting...');
+        setStatus({ success: true, message: 'Login successful! Redirecting...' });
         setTimeout(() => {
           navigate('/');
         }, 1000);
       } 
       else {
         // console.log('Login failed:', message);
-        setStatus(message || 'Login failed. Please check your credentials.');
+        setStatus({ success: false, message: message || 'Login failed. Please check your credentials.' });
       }
-    } catch (error) {
-      setStatus('An unexpected error occurred. Please try again.');
-    } finally {
+    } 
+    catch (error) {
+      // console.error('Error during login:', error);
+      setStatus({ success: false, message: 'An unexpected error occurred. Please try again.' });
+    } 
+    finally {
       setIsLoading(false);
     }
   };
@@ -99,12 +102,15 @@ export default function Login() {
             </div>
 
             {/* Status Message */}
-            {status && (
+            {status.message && (
               <div
-                className={`mb-4 p-3 rounded-lg text-sm ${'bg-red-50 text-red-700 border border-red-200'}`}
+                className={`mb-4 p-3 rounded-lg text-sm ${!status.success
+                  ? 'bg-red-50 text-red-700 border border-red-200'
+                  : 'bg-fog text-forest border border-forest/20'
+                  }`}
                 role="status"
               >
-                {status}
+                {status.message}
               </div>
             )}
 

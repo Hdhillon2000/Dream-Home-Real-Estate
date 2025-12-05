@@ -13,14 +13,13 @@ import { Logo } from '../components/ui/Logo.jsx';
 
 export default function Register() {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    userName: '',
     email: '',
     password: '',
     passwordConfirm: '',
     role: ''
   });
-  const [status, setStatus] = useState({ message: '', isError: false });
+  const [status, setStatus] = useState({ success: null, message: '' });
   const { register } = useAuth();
 
   const handleChange = (event) => {
@@ -29,12 +28,12 @@ export default function Register() {
   };
 
   const validateForm = () => {
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.role) {
-      setStatus({ message: 'All fields are required.', isError: true });
+    if (!formData.userName || !formData.email || !formData.password || !formData.role) {
+      setStatus({ success: false, message: 'All fields are required.' });
       return false;
     }
     if (formData.password !== formData.passwordConfirm) {
-      setStatus({ message: 'Passwords do not match.', isError: true });
+      setStatus({ success: false, message: 'Passwords do not match.' });
       return false;
     }
     return true;
@@ -42,22 +41,24 @@ export default function Register() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setStatus({ message: '', isError: false });
+    setStatus({ success: null, message: '' });
 
     if (!validateForm()) return;
 
-    const result = await register(
-      `${formData.firstName} ${formData.lastName}`,
+    const { success, message } = await register(
+      formData.userName,
       formData.email,
       formData.password,
       formData.role
     );
 
-    if (result.success) {
-      setStatus({ message: 'Registration successful! Waiting for admin approval.', isError: false });
-    } else {
-      setStatus({ message: result.message || 'Registration failed.', isError: true });
+    if (success) {
+      setStatus({ success: true, message: 'Registration successful! Please wait for approval.' });
     }
+    else {
+      setStatus({ success: false, message });
+    };
+
   };
 
   return (
@@ -85,15 +86,15 @@ export default function Register() {
                   <label className="form-label">First Name</label>
                   <input
                     type="text"
-                    name="firstName"
+                    name="userName"
                     className="form-input"
-                    placeholder="John"
-                    value={formData.firstName}
+                    placeholder="JohnSmith"
+                    value={formData.userName}
                     onChange={handleChange}
                     required
                   />
                 </div>
-                <div>
+                {/* <div>
                   <label className="form-label">Last Name</label>
                   <input
                     type="text"
@@ -104,7 +105,7 @@ export default function Register() {
                     onChange={handleChange}
                     required
                   />
-                </div>
+                </div> */}
               </div>
 
               {/* Email */}
@@ -173,11 +174,10 @@ export default function Register() {
             {/* Status Message */}
             {status.message && (
               <div
-                className={`mb-4 p-3 rounded-lg text-sm ${
-                  status.isError
-                    ? 'bg-red-50 text-red-700 border border-red-200'
-                    : 'bg-fog text-forest border border-forest/20'
-                }`}
+                className={`mb-4 p-3 rounded-lg text-sm ${!status.success
+                  ? 'bg-red-50 text-red-700 border border-red-200'
+                  : 'bg-fog text-forest border border-forest/20'
+                  }`}
                 role="status"
               >
                 {status.message}
@@ -210,4 +210,4 @@ export default function Register() {
       </div>
     </div>
   );
-}
+};
