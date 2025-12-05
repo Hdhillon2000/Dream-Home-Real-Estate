@@ -308,6 +308,7 @@ export default function StaffMenu() {
                       className="form-input"
                       value={formData.dob}
                       onChange={handleInputChange}
+                      required
                     />
                   </div>
                   <div>
