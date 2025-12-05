@@ -10,24 +10,25 @@ import { Card } from '../components/ui/Card.jsx';
 import { Button } from '../components/ui/Button.jsx';
 
 export default function StaffMenu() {
-  const [staffRecords, setStaffRecords] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [formData, setFormData] = useState({
-    staff_id: '',
-    firstName: '',
-    lastName: '',
-    position: '',
-    branchNo: '',
-    dob: '',
-    salary: '',
-    telephone: '',
-    mobile: '',
-    email: ''
-  });
-  const [editingId, setEditingId] = useState(null);
-  const { user } = useAuth();
+  const
+    [staffRecords, setStaffRecords] = useState([]),
+    [availBranches, setAvailBranches] = useState([]),
+    [isLoading, setIsLoading] = useState(true),
+    [formData, setFormData] = useState({
+      staff_id: '',
+      firstName: '',
+      lastName: '',
+      position: '',
+      branchNo: '',
+      dob: '',
+      salary: '',
+      telephone: '',
+      mobile: '',
+      email: ''
+    }),
+    [editingId, setEditingId] = useState(null),
+    { user } = useAuth();
 
-  // Fetch staff records
   useEffect(() => {
     const fetchStaff = async () => {
       // console.log("Fetching staff records...", user);
@@ -38,12 +39,26 @@ export default function StaffMenu() {
         if (response.ok) {
           const data = await response.json();
           setStaffRecords(data);
-        }
-      } catch (error) {
-        console.error('Error fetching staff:', error);
-      } finally {
-        setIsLoading(false);
+
+          const branchesResponse = await fetch('/api/branches', {
+            credentials: 'include'
+          });
+
+          if (branchesResponse.ok) {
+            const branchesData = await branchesResponse.json();
+            setAvailBranches(branchesData);
+          }
+          else {
+            console.error('Failed to fetch branches');
+          };
+        };
       }
+      catch (error) {
+        console.error('Error fetching staff:', error);
+      }
+      finally {
+        setIsLoading(false);
+      };
     };
 
     fetchStaff();
@@ -269,16 +284,21 @@ export default function StaffMenu() {
                     />
                   </div>
                   <div>
-                    <label className="form-label">Branch Number</label>
-                    <input
-                      type="text"
+                    <label className="form-label">Branch</label>
+                    <select
                       name="branchNo"
                       className="form-input"
-                      placeholder="B001"
                       value={formData.branchNo}
                       onChange={handleInputChange}
                       required
-                    />
+                    >
+                      <option value="">Select a branch</option>
+                      {availBranches.map((branch) => (
+                        <option key={branch.branch_no} value={branch.branch_no}>
+                          {branch.branch_no} - {branch.street} {branch.city}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div>
                     <label className="form-label">Date of Birth</label>
