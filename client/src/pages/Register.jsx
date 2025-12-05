@@ -81,9 +81,9 @@ export default function Register() {
           <form onSubmit={handleSubmit}>
             <div className="space-y-4 mb-6">
               {/* Name Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4"> */}
                 <div>
-                  <label className="form-label">First Name</label>
+                  <label className="form-label">Username</label>
                   <input
                     type="text"
                     name="userName"
@@ -106,7 +106,7 @@ export default function Register() {
                     required
                   />
                 </div> */}
-              </div>
+              {/* </div> */}
 
               {/* Email */}
               <div>
